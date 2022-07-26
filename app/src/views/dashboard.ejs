@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../assets/css/bootstrap.min.css" />
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <title>Sistema Embarcadores - Dashboard</title>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <span>Sistema de Embarcadores - <strong>Bem vindo, <%= user.name + ' [' + user.companyName + ']' %>
+            </strong></span>
+        <div class="row mt-5">
+            <% if(user.companyType=='shipper' ) { %>
+                <div class="col-12">
+                    <h4>Listagem de Ofertas</h4> <button class="btn btn-success" data-toggle="modal"
+                        data-target="#adicionarCargaModal">+</button>
+                    <table class="table mt-2">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>CARGA</th>
+                                <th>QUANTIDADE</th>
+                                <th>AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% offers.forEach(offer=> { %>
+                                <tr>
+                                    <th>
+                                        <%= offer.id %>
+                                    </th>
+                                    <th>
+                                        <%= offer.productName %>
+                                    </th>
+                                    <th>
+                                        <%= offer.amount + '(' + offer.unity + ')' %>
+                                    </th>
+                                    <th>
+                                        <a href="/proposals/<%= offer.id %>"><button class="btn btn-info">Visualizar
+                                                Ofertas</button></a>
+                                    </th>
+                                </tr>
+                                <%})%>
+                        </tbody>
+                    </table>
+                </div>
+                <% } %>
+                    <% if(user.companyType=='shipping' ) { %>
+                        <div class="col-12">
+                            <h4>Listagem de Lances</h4> <button class="btn btn-success" data-toggle="modal"
+                                data-target="#adicionarLanceModal">+</button>
+                            <table class="table mt-2">
+                                <thead>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>CARGA / PROPOSTA</th>
+                                        <th>VALOR</th>
+                                        <th>EMBARCADORA</th>
+                                        <th>STATUS</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% proposals.forEach(proposal=> { %>
+                                        <tr>
+                                            <th>
+                                                <%= proposal.id %>
+                                            </th>
+                                            <th>
+                                                <%= proposal.productName + ' - ' + proposal.amount + '(' +
+                                                    proposal.unity + ')' %>
+                                            </th>
+                                            <th>
+                                                R$ <%= proposal.budget %>
+                                            </th>
+                                            <th>
+                                                <%= proposal.name %>
+                                            </th>
+                                            <th>
+                                                <%= proposal.winner ? 'VENCEDOR' : 'PENDENTE' %>
+                                            </th>
+                                        </tr>
+                                        <%})%>
+                                </tbody>
+                            </table>
+                        </div>
+                        <% } %>
+        </div>
+    </div>
+
+    <div class="modal fade" id="adicionarCargaModal" tabindex="-1" role="dialog"
+        aria-labelledby="adicionarCargaModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adicionarCargaModalLabel">Adicionar Oferta</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/offer/new">
+                        <label for="cargaForm">Carga</label>
+                        <input id="cargaForm" name="productName" type="text" class="input form-control"
+                            placeholder="Nome da carga" required>
+                        <label for="quantidadeForm">Quantidade</label>
+                        <input id="quantidadeForm" name="amount" type="number" class="input form-control"
+                            placeholder="Quantidade" required>
+                        <label for="unidadeForm">Unidade</label>
+                        <select id="unidadeForm" name="unity" class="form-control select" required>
+                            <option selected value="null" disabled>Selecione uma unidade</option>
+                            <option value="kg">Quilograma (kg)</option>
+                            <option value="l">Litro (l)</option>
+                        </select>
+                        <button type="submit" class="btn btn-primary mt-5">Adicionar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="adicionarLanceModal" tabindex="-1" role="dialog"
+        aria-labelledby="adicionarLanceModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="adicionarLanceModalLabel">Adicionar Lance</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form method="POST" action="/proposal/new">
+                        <label for="cargaForm">Carga</label>
+                        <select id="cargaForm" name="product" class="form-control select" required>
+                            <option selected value="null" disabled>Selecione uma carga</option>
+                            <% offers.forEach(offer=> { %>
+                                <option value=<%=offer.id %>>
+                                    <%= offer.productName + ' - ' + offer.amount + '(' + offer.unity + ')' %>
+                                </option>
+                                <%})%>
+                        </select>
+                        <label for="quantidadeForm">Quantidade</label>
+                        <input id="quantidadeForm" name="amount" type="number" class="input form-control"
+                            placeholder="Quantidade" required>
+                        <label for="budgetForm">Valor</label>
+                        <input id="budgetForm" name="budget" type="number" class="input form-control"
+                            placeholder="Valor" required>
+                        <button type="submit" class="btn btn-primary mt-5">Adicionar</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="visualizarLancesModal" tabindex="-1" role="dialog"
+        aria-labelledby="visualizarLancesModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="visualizarLancesModalLabel">Lista de Lances</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <table class="table mt-2">
+                        <thead>
+                            <tr>
+                                <th>TRANSPORTADORA</th>
+                                <th>QUANTIDADE</th>
+                                <th>ORÇAMENTO</th>
+                                <th>AÇÕES</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% if(locals.selectProposals) { selectProposals.forEach(proposal=> {%>
+                                <tr>
+                                    <th>
+                                        <%= proposal.name %>
+                                    </th>
+                                    <th>
+                                        <%= proposal.amount + '(' + proposal.unity + ')' %>
+                                    </th>
+                                    <th>
+                                        R$<%= proposal.budget %>
+                                    </th>
+                                    <th>
+                                        <% if(proposal.winner) {%>
+                                            <strong>VENCEDOR</strong>
+                                        <% } else { %>
+                                        <a href="/proposals/winner/<%= proposal.id %>"><button
+                                                class="btn btn-success">Declarar Vencedor</button></a>
+                                        <% } %>
+                                    </th>
+                                </tr>
+                                <%})%>
+                                    <% } %>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <% if(locals.selectProposals) {%>
+        <script>
+            $('#visualizarLancesModal').modal({ show: true })
+        </script>
+        <% } %>
+</body>
+
+</html>

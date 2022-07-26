@@ -1,0 +1,36 @@
+version: '3.2'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: database
+      PGDATA: /data/postgres
+    volumes:
+      - .docker/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - app_db:/data/postgres
+    ports:
+      - 5432:5432
+    networks:
+      - app
+
+  app:
+    image: node:16.16.0
+    restart: always
+    working_dir: /app
+    volumes: 
+      - ./app:/app
+    command: bash -c "npm install --quiet && npm run dev"
+    ports: 
+      - 3000:3000
+    networks:
+      - app
+
+networks:
+  app:
+
+volumes:
+  app_db:

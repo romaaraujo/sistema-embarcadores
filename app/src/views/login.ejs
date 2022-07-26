@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css" />
+    <title>Sistema Embarcadores - Login</title>
+</head>
+
+<body>
+    <div class="container w-50 mt-5">
+        <h1>Sistema Embarcadores</h1>
+        <% if(error !='' ) {%>
+            <div class="alert alert-danger" role="alert">
+                <%= error %>
+              </div>
+            <% }%>
+                <form method="POST" action="auth/login">
+                    <div class="form-outline mb-4">
+                        <input type="email" id="form2Example1" name="email" class="form-control" required/>
+                        <label class="form-label" for="form2Example1">E-mail</label>
+                    </div>
+
+                    <div class="form-outline mb-4">
+                        <input type="password" id="form2Example2" name="password" class="form-control" required/>
+                        <label class="form-label" for="form2Example2">Senha</label>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block mb-4">Entrar</button>
+                </form>
+    </div>
+</body>
+
+</html>
